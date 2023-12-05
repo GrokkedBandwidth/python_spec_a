@@ -31,6 +31,10 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ````
 
+## Disclaimer
+This is not meant to be a functional spectrum analyzer (at the moment)
+and is more of a piece for me to learn DSP on. 
+
 ## Credits
 For the udev rules to run my B200 without root permissions:
 https://kb.ettus.com/Building_and_Installing_the_USRP_Open-Source_Toolchain_(UHD_and_GNU_Radio)_on_Linux
