@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from signal import Signal
 
-run = True
-def setUp():
+
+def set_up():
     signal = Signal()
     usrp = uhd.usrp.MultiUSRP()
     usrp.set_rx_rate(signal.rate, 0)
@@ -45,9 +45,9 @@ def rx(metadata, recv_buffer, streamer, signal):
     plt.ylabel("PSD")
     plt.pause(0.01)
 
-
+run = True
 # Plot freq domain
-start = setUp()
+start = set_up()
 while run:
     try:
         rx(start[1], start[2], start[3], start[4])
