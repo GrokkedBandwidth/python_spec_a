@@ -1,13 +1,15 @@
 import uhd
 import numpy as np
 import matplotlib.pyplot as plt
+from signal import Signal
 
 run = True
 def setUp():
+    signal = Signal()
     usrp = uhd.usrp.MultiUSRP()
-    usrp.set_rx_rate(10e6, 0)
-    usrp.set_rx_freq(uhd.libpyuhd.types.tune_request(101e6), 0)
-    usrp.set_rx_gain(10, 0)
+    usrp.set_rx_rate(signal.rate, 0)
+    usrp.set_rx_freq(uhd.libpyuhd.types.tune_request(signal.freq), 0)
+    usrp.set_rx_gain(signal.gain, 0)
     # Set up the stream and receive buffer
     st_args = uhd.usrp.StreamArgs("fc32", "sc16")
     st_args.channels = [0]
@@ -18,14 +20,14 @@ def setUp():
     stream_cmd = uhd.types.StreamCMD(uhd.types.StreamMode.start_cont)
     stream_cmd.stream_now = True
     streamer.issue_stream_cmd(stream_cmd)
-    return usrp, metadata, recv_buffer, streamer
+    return usrp, metadata, recv_buffer, streamer, signal
 
 
 # Receive Samples
-def rx(usrp, metadata, recv_buffer, streamer):
-    num_samps = 10000
-    sample_rate = usrp.get_rx_rate()
-    center_freq = usrp.get_rx_freq()
+def rx(metadata, recv_buffer, streamer, signal):
+    num_samps = signal.num_samps
+    sample_rate = signal.rate
+    center_freq = signal.freq
     rx_samples = np.zeros(num_samps, dtype=np.complex64)
     for i in range(num_samps//1000):
         streamer.recv(recv_buffer, metadata)
@@ -48,7 +50,7 @@ def rx(usrp, metadata, recv_buffer, streamer):
 start = setUp()
 while run:
     try:
-        rx(start[0], start[1], start[2], start[3])
+        rx(start[1], start[2], start[3], start[4])
     except KeyboardInterrupt:
         stream_cmd = uhd.types.StreamCMD(uhd.types.StreamMode.stop_cont)
         start[3].issue_stream_cmd(stream_cmd)
